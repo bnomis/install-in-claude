@@ -48,7 +48,7 @@ accepted.
 
 ## Task 2: Correct the two spec drifts
 
-**Status:** todo
+**Status:** done
 **Priority:** low
 **Complexity:** small
 **Source Reference:** review-1 items I4, I5 (Doc4)
@@ -58,18 +58,18 @@ with the code on the two points the audit found.
 
 **Subtasks:**
 
-- [ ] Confirm review-1's Answers section approves I4 and I5; if it does not, stop the task as `blocked`, naming the missing answer
-- [ ] In the Repository section, replace the names hook's repository `git@github.com:bnomis/agents.git` with `git@github.com:bnomis/auditor.git`, the auditor repository, as `.pre-commit-config.yaml` has it; keep the rest of the sentence true (read it against `.pre-commit-config.yaml`)
-- [ ] In the Error handling table, split the row "`settings.json` is not valid JSON, or not an object" into two: not valid JSON gives a message naming the file and `python3 -m json.tool <file>`; not a JSON object gives a message naming the file
+- [x] Confirm review-1's Answers section approves I4 and I5; if it does not, stop the task as `blocked`, naming the missing answer
+- [x] In the Repository section, replace the names hook's repository `git@github.com:bnomis/agents.git` with `git@github.com:bnomis/auditor.git`, the auditor repository, as `.pre-commit-config.yaml` has it; keep the rest of the sentence true (read it against `.pre-commit-config.yaml`)
+- [x] In the Error handling table, split the row "`settings.json` is not valid JSON, or not an object" into two: not valid JSON gives a message naming the file and `python3 -m json.tool <file>`; not a JSON object gives a message naming the file
 
 **Acceptance Criteria:**
 
-- [ ] `grep -n 'agents.git' agents/specs/install-in-claude/spec.md` prints nothing
-- [ ] The spec's not-an-object row matches the message `read_settings` raises (`<path> is not a JSON object; not changed`)
+- [x] `grep -n 'agents.git' agents/specs/install-in-claude/spec.md` prints nothing
+- [x] The spec's not-an-object row matches the message `read_settings` raises (`<path> is not a JSON object; not changed`)
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
 
 **Notes:**
 
