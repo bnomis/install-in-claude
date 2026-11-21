@@ -10,7 +10,10 @@ repos:
   # one. The names hook is published by the auditor repository and reads a
   # list kept outside every repository.
   - repo: git@github.com:bnomis/auditor.git
-    rev: 6747c4e78f83f14efd7af58c3d01c6b5b1be27b1
+    rev: 52b4813c56fdb74f52f86b1e2f3ea46bee2cfae1
     hooks:
       - id: no-project-names
         args: [--allow=install-in-claude]
+      - id: auditme-changed
+      - id: auditme-all
+        stages: [manual, pre-push]
