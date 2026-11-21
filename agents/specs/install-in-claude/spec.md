@@ -27,7 +27,7 @@ cannot hold a hyphen:
 
 | File | Holds |
 |---|---|
-| `src/install_in_claude/__init__.py` | Re-exports the public API below |
+| `src/install_in_claude/__init__.py` | Holds only the package docstring; the API below is imported from its own module |
 | `src/install_in_claude/cli.py` | The `cappa` command and `main()` |
 | `src/install_in_claude/links.py` | Linking and the dangling-link report |
 | `src/install_in_claude/settings.py` | Edit parsing, merging, reading and writing `settings.json` |
@@ -144,9 +144,13 @@ every `--append`, each in the order given.
 |---|---|---|
 | Bad arguments, or an edit that does not parse (no `=`, an empty or invalid `PATH`, `[]` with no `MATCH`, invalid JSON): `EditError` | 2 | Message naming the argument; nothing changed. |
 | `--source` is not a directory | 2 | `ERROR: <source> is not a directory`; nothing changed. |
-| `settings.json` is not valid JSON, or not an object: `SettingsError` | 1 | Message naming the file and `python3 -m json.tool <file>`; nothing changed. |
+| `--target` exists and is not a directory | 2 | `ERROR: <target> is not a directory`; nothing changed. |
+| `--settings` exists and is not a file | 2 | `ERROR: <settings> is not a file`; nothing changed. |
+| `settings.json` cannot be read (a directory, a permission error) or is not UTF-8 text: `SettingsError` | 1 | Message naming the file and the cause (`<path> cannot be read (<strerror>); not changed`, `<path> is not UTF-8 text; not changed`); nothing changed. |
+| `settings.json` is not valid JSON: `SettingsError` | 1 | Message naming the file and `python3 -m json.tool <file>`; nothing changed. |
+| `settings.json` is not a JSON object: `SettingsError` | 1 | Message naming the file (`<path> is not a JSON object; not changed`); nothing changed. |
 | An edit meets the wrong type (a `PATH` part is not an object, an `--append` target is not a list): `SettingsError` | 1 | Message naming the path and the type found; nothing changed. |
-| An `OSError` while linking or writing | traceback | Propagates. Links already made stay; `settings.json` is unchanged, as it is written last and atomically. |
+| An `OSError` while linking or writing (reading `settings.json` is covered above) | traceback | Propagates. Links already made stay; `settings.json` is unchanged, as it is written last and atomically. |
 
 `EditError` and `SettingsError` are defined in `settings.py`, both subclasses
 of `InstallError(Exception)`. `main()` turns them into a message on stderr and
@@ -232,8 +236,8 @@ project it serves (see [Repository](#repository)).
 - `AGENTS.md`: the test command, and that the repository serves many projects
   and names none it was run on in code, tests, fixtures or commits.
 - `.pre-commit-config.yaml`: ruff-check and ruff-format at the `rev` that
-  matches the ruff in `uv.lock`, and the agents repository's
-  `no-project-names` hook (`git@github.com:bnomis/agents.git`, the `rev` the
+  matches the ruff in `uv.lock`, and the auditor repository's
+  `no-project-names` hook (`git@github.com:bnomis/auditor.git`, the `rev` the
   other shared repositories pin) with `args: [--allow=install-in-claude]`.
   Installed with `pre-commit install --hook-type pre-commit --hook-type
   pre-push --hook-type commit-msg`.

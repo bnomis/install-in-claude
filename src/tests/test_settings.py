@@ -17,11 +17,13 @@ def test_set_if_absent_parses_a_dotted_path() -> None:
 
 def test_append_parses_a_match() -> None:
     edit = install_in_claude.settings.parse_append('hooks.Stop[auditme-stop.sh]={"a":1}')
+    # auditme: accept[literal-duplication] expected value written out in an assertion
     assert edit == install_in_claude.settings.Append(('hooks', 'Stop'), {'a': 1}, 'auditme-stop.sh')
 
 
 def test_append_without_a_match() -> None:
     edit = install_in_claude.settings.parse_append('hooks.Stop={"a":1}')
+    # auditme: accept[literal-duplication] expected value written out in an assertion
     assert edit == install_in_claude.settings.Append(('hooks', 'Stop'), {'a': 1}, None)
 
 
@@ -173,6 +175,21 @@ def test_invalid_settings_are_refused(tmp_path: pathlib.Path, content: str, reas
     assert not path.with_name('settings.json.orig').exists()
 
 
+def test_a_directory_is_reported_as_unreadable(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    path.mkdir()
+    with pytest.raises(install_in_claude.settings.SettingsError, match=f'{path} cannot be read'):
+        install_in_claude.settings.read_settings(path)
+
+
+def test_a_non_utf8_file_is_refused(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    path.write_bytes(b'\xff\xfe\x00{')
+    with pytest.raises(install_in_claude.settings.SettingsError, match=f'{path} is not UTF-8 text'):
+        install_in_claude.settings.read_settings(path)
+    assert not path.with_name('settings.json.orig').exists()
+
+
 def test_a_written_file_round_trips(tmp_path: pathlib.Path) -> None:
     path = tmp_path / 'new' / 'settings.json'
     install_in_claude.settings.write_settings(path, {'a': [1, {'b': 'c'}]})
@@ -200,4 +217,5 @@ def test_the_original_is_kept_once(tmp_path: pathlib.Path) -> None:
 def test_a_new_file_gets_no_original(tmp_path: pathlib.Path) -> None:
     path = tmp_path / 'settings.json'
     install_in_claude.settings.write_settings(path, {})
+    # auditme: accept[literal-duplication] expected value written out in an assertion
     assert sorted(p.name for p in tmp_path.iterdir()) == ['settings.json']
