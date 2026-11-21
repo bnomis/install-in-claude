@@ -150,7 +150,7 @@ spec that the package is the command.
 
 ## Task 5: Report an unreadable settings.json as a SettingsError
 
-**Status:** todo
+**Status:** done
 **Priority:** medium
 **Complexity:** small
 **Source Reference:** review-1 decision D1 option A (A1 at `settings.py:183`)
@@ -159,22 +159,22 @@ spec that the package is the command.
 
 **Subtasks:**
 
-- [ ] Confirm review-1's Answers section records D1 as A; if it does not, stop the task as `blocked`, naming the missing answer
-- [ ] In `read_settings` in `src/install_in_claude/settings.py`, read the file inside a `try`: an `OSError` raises `SettingsError('<path> cannot be read (<strerror>); not changed') from e`, a `UnicodeDecodeError` raises `SettingsError('<path> is not UTF-8 text; not changed') from e`; the invalid-JSON and not-an-object messages stay as they are
-- [ ] Update the `Raises:` section of `read_settings` to name the new cases
-- [ ] Add tests to `src/tests/test_settings.py`: a path that is a directory raises `SettingsError` naming the path; a file of invalid UTF-8 bytes raises `SettingsError` naming the path
-- [ ] Update `README.md`'s Exit codes row for `1` to include a `settings.json` that cannot be read
-- [ ] Add the case to the Error handling table in `agents/specs/install-in-claude/spec.md` (exit 1, message naming the file, nothing changed), and keep the `OSError` row's scope to linking and writing
+- [x] Confirm review-1's Answers section records D1 as A; if it does not, stop the task as `blocked`, naming the missing answer
+- [x] In `read_settings` in `src/install_in_claude/settings.py`, read the file inside a `try`: an `OSError` raises `SettingsError('<path> cannot be read (<strerror>); not changed') from e`, a `UnicodeDecodeError` raises `SettingsError('<path> is not UTF-8 text; not changed') from e`; the invalid-JSON and not-an-object messages stay as they are
+- [x] Update the `Raises:` section of `read_settings` to name the new cases
+- [x] Add tests to `src/tests/test_settings.py`: a path that is a directory raises `SettingsError` naming the path; a file of invalid UTF-8 bytes raises `SettingsError` naming the path
+- [x] Update `README.md`'s Exit codes row for `1` to include a `settings.json` that cannot be read
+- [x] Add the case to the Error handling table in `agents/specs/install-in-claude/spec.md` (exit 1, message naming the file, nothing changed), and keep the `OSError` row's scope to linking and writing
 
 **Acceptance Criteria:**
 
-- [ ] Both new tests pass
-- [ ] `read_settings` on a missing file still returns `{}`, and the invalid-JSON test still sees the `json.tool` hint
+- [x] Both new tests pass
+- [x] `read_settings` on a missing file still returns `{}`, and the invalid-JSON test still sees the `json.tool` hint
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_settings.py src/tests/test_cli.py -q` passes
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_settings.py src/tests/test_cli.py -q` passes
 
 **Notes:**
 

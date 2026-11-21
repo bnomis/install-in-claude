@@ -146,10 +146,11 @@ every `--append`, each in the order given.
 | `--source` is not a directory | 2 | `ERROR: <source> is not a directory`; nothing changed. |
 | `--target` exists and is not a directory | 2 | `ERROR: <target> is not a directory`; nothing changed. |
 | `--settings` exists and is not a file | 2 | `ERROR: <settings> is not a file`; nothing changed. |
+| `settings.json` cannot be read (a directory, a permission error) or is not UTF-8 text: `SettingsError` | 1 | Message naming the file and the cause (`<path> cannot be read (<strerror>); not changed`, `<path> is not UTF-8 text; not changed`); nothing changed. |
 | `settings.json` is not valid JSON: `SettingsError` | 1 | Message naming the file and `python3 -m json.tool <file>`; nothing changed. |
 | `settings.json` is not a JSON object: `SettingsError` | 1 | Message naming the file (`<path> is not a JSON object; not changed`); nothing changed. |
 | An edit meets the wrong type (a `PATH` part is not an object, an `--append` target is not a list): `SettingsError` | 1 | Message naming the path and the type found; nothing changed. |
-| An `OSError` while linking or writing | traceback | Propagates. Links already made stay; `settings.json` is unchanged, as it is written last and atomically. |
+| An `OSError` while linking or writing (reading `settings.json` is covered above) | traceback | Propagates. Links already made stay; `settings.json` is unchanged, as it is written last and atomically. |
 
 `EditError` and `SettingsError` are defined in `settings.py`, both subclasses
 of `InstallError(Exception)`. `main()` turns them into a message on stderr and

@@ -175,6 +175,21 @@ def test_invalid_settings_are_refused(tmp_path: pathlib.Path, content: str, reas
     assert not path.with_name('settings.json.orig').exists()
 
 
+def test_a_directory_is_reported_as_unreadable(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    path.mkdir()
+    with pytest.raises(install_in_claude.settings.SettingsError, match=f'{path} cannot be read'):
+        install_in_claude.settings.read_settings(path)
+
+
+def test_a_non_utf8_file_is_refused(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    path.write_bytes(b'\xff\xfe\x00{')
+    with pytest.raises(install_in_claude.settings.SettingsError, match=f'{path} is not UTF-8 text'):
+        install_in_claude.settings.read_settings(path)
+    assert not path.with_name('settings.json.orig').exists()
+
+
 def test_a_written_file_round_trips(tmp_path: pathlib.Path) -> None:
     path = tmp_path / 'new' / 'settings.json'
     install_in_claude.settings.write_settings(path, {'a': [1, {'b': 'c'}]})

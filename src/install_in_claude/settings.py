@@ -177,11 +177,17 @@ def read_settings(path: pathlib.Path) -> dict[str, object]:
     """The parsed settings file, {} when it is absent.
 
     Raises:
-        SettingsError: the file is not valid JSON, or not a JSON object.
+        SettingsError: the file cannot be read, is not UTF-8 text, is not
+            valid JSON, or is not a JSON object.
     """
     if not path.exists():
         return {}
-    text = path.read_text()
+    try:
+        text = path.read_text()
+    except UnicodeDecodeError as e:
+        raise SettingsError(f'{path} is not UTF-8 text; not changed') from e
+    except OSError as e:
+        raise SettingsError(f'{path} cannot be read ({e.strerror}); not changed') from e
     try:
         settings = json.loads(text)
     except ValueError as e:

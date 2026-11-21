@@ -116,7 +116,7 @@ install-in-claude --source claude
 | Exit | Meaning |
 |---|---|
 | `0` | Installed, or nothing to do |
-| `1` | `settings.json` is not valid JSON or not an object, or an edit meets the wrong type (a key on the path is not an object, an `--append` target is not a list); nothing changed |
+| `1` | `settings.json` cannot be read, is not valid JSON or is not an object, or an edit meets the wrong type (a key on the path is not an object, an `--append` target is not a list); nothing changed |
 | `2` | Bad arguments, an edit that does not parse, or `--source` or `--target` is not a directory, or `--settings` is not a file; nothing changed |
 
 ## Develop
