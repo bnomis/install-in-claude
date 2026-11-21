@@ -212,7 +212,7 @@ mode and the first original.
 
 ## Task 5: Link the entries and report dangling links
 
-**Status:** todo
+**Status:** done
 **Priority:** high
 **Complexity:** medium
 **Spec Reference:** API (links.py), Implementation steps 4 and 5
@@ -222,18 +222,18 @@ did, with a dry-run mode, and find dangling links.
 
 **Subtasks:**
 
-- [ ] `link_entries(source, target, dry_run)`: create `target`; for each
+- [x] `link_entries(source, target, dry_run)`: create `target`; for each
       top-level entry of `source` not starting with `.`, in sorted order, link
       a file as `target/<name>`, or for a directory create `target/<name>` and
       link each of its entries (sorted, dotfiles included) into it
-- [ ] For each link: replace a link in the way; rename a real file in the way
+- [x] For each link: replace a link in the way; rename a real file in the way
       to `<name>.orig`, then `<name>.orig.2` and on; link relatively
       (`src.parent.relative_to(dst.parent, walk_up=True) / src.name`);
       return `Linking <src> to <dst> via <relative>`, or `Would link ...`
       with nothing changed when `dry_run`
-- [ ] `dangling_links(target, max_depth=2)`: walk `target`, not below
+- [x] `dangling_links(target, max_depth=2)`: walk `target`, not below
       `max_depth`, returning each symlink whose target is gone, sorted
-- [ ] `src/tests/test_links.py`: a new file; an existing link replaced; a real
+- [x] `src/tests/test_links.py`: a new file; an existing link replaced; a real
       file renamed `.orig` then `.orig.2`; directories linked one level down;
       top-level dotfiles skipped; a second run changes nothing; dry run
       changes nothing; a dangling link found; none when all resolve; none
@@ -241,13 +241,13 @@ did, with a dry-run mode, and find dangling links.
 
 **Acceptance Criteria:**
 
-- [ ] Each case above passes
-- [ ] Every link made is relative
+- [x] Each case above passes
+- [x] Every link made is relative
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_links.py -q` exits 0
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_links.py -q` exits 0
 
 **Notes:**
 
