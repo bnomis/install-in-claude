@@ -80,7 +80,7 @@ package, so every later task has the checks its Definition of Done names.
 
 ## Task 2: Parse the settings edits
 
-**Status:** todo
+**Status:** done
 **Priority:** high
 **Complexity:** small
 **Spec Reference:** API (settings.py), Edits to `settings.json`, Error handling
@@ -91,31 +91,31 @@ touched.
 
 **Subtasks:**
 
-- [ ] In `src/install_in_claude/settings.py`: `InstallError(Exception)`,
+- [x] In `src/install_in_claude/settings.py`: `InstallError(Exception)`,
       `EditError(InstallError)`, `SettingsError(InstallError)`, the frozen
       dataclasses `SetIfAbsent(path, value)` and `Append(path, value, match)`
-- [ ] `parse_set_if_absent(text)` and `parse_append(text)`: split `PATH` (and
+- [x] `parse_set_if_absent(text)` and `parse_append(text)`: split `PATH` (and
       for `--append`, an optional `[MATCH]`) from `JSON` at the first `=`
       after them, with `^([^.\[\]=]+(?:\.[^.\[\]=]+)*)(\[[^\]]+\])?=(.*)$`
       (DOTALL); `[MATCH]` is refused by `parse_set_if_absent`; the value is
       `json.loads` of the rest
-- [ ] Each `EditError` message names the argument as given and what is wrong:
+- [x] Each `EditError` message names the argument as given and what is wrong:
       no `=`, empty or invalid `PATH`, `[]` with no `MATCH`, invalid JSON
-- [ ] `src/tests/test_settings.py`: each valid form (one part, dotted, with
+- [x] `src/tests/test_settings.py`: each valid form (one part, dotted, with
       `MATCH`, a value holding `=` and `]`), and each error
 
 **Acceptance Criteria:**
 
-- [ ] `parse_append('hooks.Stop[auditme-stop.sh]={"a":1}')` returns
+- [x] `parse_append('hooks.Stop[auditme-stop.sh]={"a":1}')` returns
       `Append(('hooks', 'Stop'), {'a': 1}, 'auditme-stop.sh')`
-- [ ] `parse_set_if_absent('statusLine={"type":"command"}')` returns
+- [x] `parse_set_if_absent('statusLine={"type":"command"}')` returns
       `SetIfAbsent(('statusLine',), {'type': 'command'})`
-- [ ] Every malformed form raises `EditError`
+- [x] Every malformed form raises `EditError`
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_settings.py -q` exits 0
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_settings.py -q` exits 0
 
 **Notes:**
 
