@@ -309,7 +309,7 @@ project keeps its own copy of the installer.
 
 ## Task 7: User guide, duplication check and close the spec
 
-**Status:** todo
+**Status:** done
 **Priority:** medium
 **Complexity:** small
 **Spec Reference:** Repository, Testing, Consumers
@@ -319,29 +319,29 @@ invocations, so that switching a project to the tool needs nothing else.
 
 **Subtasks:**
 
-- [ ] `README.md`: what it is and why; install and run with
+- [x] `README.md`: what it is and why; install and run with
       `uvx --from "git+ssh://git@github.com/bnomis/install-in-claude.git@<commit>" install-in-claude ...`
       (the commit from `git ls-remote git@github.com:bnomis/install-in-claude.git refs/heads/main`),
       or `uv tool install` for one machine; the options table; the three
       consumer invocations as examples; the `[MATCH]` form and why it exists;
       `--dry-run`; exit codes; why `--source` has no default
-- [ ] Hoist anything the modules duplicate to a single owner: grep
+- [x] Hoist anything the modules duplicate to a single owner: grep
       `src/install_in_claude/` for each literal collection, constant and
       one-line helper the modules define, and import rather than copy
-- [ ] `uvx --from . install-in-claude --help` from the repository root exits 0
-- [ ] Set the spec's `**Status:**` to `implemented`, and update
+- [x] `uvx --from . install-in-claude --help` from the repository root exits 0
+- [x] Set the spec's `**Status:**` to `implemented`, and update
       `agents/specs/index.md` if its description no longer matches
 
 **Acceptance Criteria:**
 
-- [ ] Every option in the spec's Settings table appears in `README.md`
-- [ ] No helper or constant is defined twice in `src/install_in_claude/`
+- [x] Every option in the spec's Settings table appears in `README.md`
+- [x] No helper or constant is defined twice in `src/install_in_claude/`
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `pre-commit run --all-files` exits 0
-- [ ] `source bin/activate.sh && pytest src/tests -q` exits 0
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `pre-commit run --all-files` exits 0
+- [x] `source bin/activate.sh && pytest src/tests -q` exits 0
 
 **Notes:**
 

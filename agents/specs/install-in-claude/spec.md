@@ -1,7 +1,7 @@
 # install-in-claude
 
 **Version:** 1.0
-**Status:** proposed
+**Status:** implemented
 **Date:** 2026-11-21
 **Review page:** https://claude.ai/artifact/M8d28UtW21aRK13RdXMX8N
 
