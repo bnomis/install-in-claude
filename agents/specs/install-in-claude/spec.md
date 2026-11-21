@@ -119,7 +119,8 @@ def dangling_links(target: pathlib.Path, max_depth: int = 2) -> list[pathlib.Pat
 
 ## Edits to `settings.json`
 
-Both options are repeatable and applied in the order given.
+Both options are repeatable. Every `--set-if-absent` applies first, then
+every `--append`, each in the order given.
 
 - `PATH` is a dot-separated key path (`statusLine`, `hooks.Stop`); each part is
   non-empty and holds no `.`, `[`, `]` or `=`. Missing objects on the way are
@@ -158,9 +159,10 @@ install:
 
 1. Parse the arguments with `cappa`, then every `--set-if-absent` and
    `--append` into `SetIfAbsent` and `Append`. Any `EditError` stops here.
-2. Resolve `--source` to an absolute path and check it is a directory;
-   `--target` defaults to `~/.claude` (expanded); `--settings` defaults to
-   `<target>/settings.json`.
+2. Resolve `--source` and check it is a directory; `--target` defaults to
+   `~/.claude` and `--settings` to `<target>/settings.json`. All three are
+   expanded and resolved through symlinks alike, so the relative links
+   computed between them hold.
 3. Read the settings and apply the edits in memory (`apply_edits`). A
    `SettingsError` stops here, before any link is made.
 4. Link: for each top-level entry of `source` not starting with `.`, a file is

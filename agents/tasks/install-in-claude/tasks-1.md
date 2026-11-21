@@ -258,7 +258,7 @@ did, with a dry-run mode, and find dangling links.
 
 ## Task 6: The command
 
-**Status:** todo
+**Status:** done
 **Priority:** high
 **Complexity:** medium
 **Spec Reference:** API (cli.py), Implementation, Settings, Error handling, Consumers
@@ -269,9 +269,9 @@ project keeps its own copy of the installer.
 
 **Subtasks:**
 
-- [ ] `src/install_in_claude/cli.py`: the `InstallInClaude` cappa dataclass
+- [x] `src/install_in_claude/cli.py`: the `InstallInClaude` cappa dataclass
       with the options in the spec's Settings table, and `main(argv)`
-- [ ] `main` in the spec's order: parse the edits (`EditError` -> stderr,
+- [x] `main` in the spec's order: parse the edits (`EditError` -> stderr,
       exit 2); resolve `--source` and refuse a non-directory
       (`ERROR: <source> is not a directory`, exit 2); default `--target` to
       `~/.claude` (expanded) and `--settings` to `<target>/settings.json`;
@@ -280,9 +280,9 @@ project keeps its own copy of the installer.
       `rm ...` line; write the settings only if they changed (not with
       `--dry-run`, which prints `Would set` / `Would append`); print each
       edit's message; return 0
-- [ ] Re-export the public API from `src/install_in_claude/__init__.py` with
+- [x] Re-export the public API from `src/install_in_claude/__init__.py` with
       `__all__`
-- [ ] `src/tests/test_cli.py`, each in a temporary target and settings file:
+- [x] `src/tests/test_cli.py`, each in a temporary target and settings file:
       the three invocations in the spec's Consumers table end to end, each
       twice (the second run changes nothing); `--dry-run` changes nothing;
       an invalid edit exits 2 with nothing linked; a missing source exits 2;
@@ -291,14 +291,14 @@ project keeps its own copy of the installer.
 
 **Acceptance Criteria:**
 
-- [ ] Each case above passes
-- [ ] `source bin/activate.sh && install-in-claude --help` lists every option
+- [x] Each case above passes
+- [x] `source bin/activate.sh && install-in-claude --help` lists every option
       in the spec's Settings table
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_cli.py -q` exits 0
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_cli.py -q` exits 0
 
 **Notes:**
 
