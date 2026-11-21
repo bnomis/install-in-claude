@@ -1,3 +1,5 @@
+import pathlib
+
 import pytest
 
 import install_in_claude.settings
@@ -55,3 +57,103 @@ def test_malformed_set_if_absent_is_refused(text: str) -> None:
 def test_an_edit_error_is_an_install_error() -> None:
     assert issubclass(install_in_claude.settings.EditError, install_in_claude.settings.InstallError)
     assert issubclass(install_in_claude.settings.SettingsError, install_in_claude.settings.InstallError)
+
+
+def apply(settings: dict[str, object], *edits: object) -> tuple[dict[str, object], list[install_in_claude.settings.EditOutcome]]:
+    return install_in_claude.settings.apply_edits(settings, list(edits))  # type: ignore[arg-type]
+
+
+STATUS = install_in_claude.settings.parse_set_if_absent('statusLine={"type":"command","command":"x"}')
+STOP = install_in_claude.settings.parse_append('hooks.Stop[stop.sh]={"hooks":[{"type":"command","command":"bash stop.sh"}]}')
+
+
+def test_set_when_absent() -> None:
+    result, outcomes = apply({}, STATUS)
+    assert result == {'statusLine': {'type': 'command', 'command': 'x'}}
+    assert outcomes == [install_in_claude.settings.EditOutcome('statusLine', 'set', True)]
+
+
+def test_kept_when_present_whatever_the_value() -> None:
+    result, outcomes = apply({'statusLine': None}, STATUS)
+    assert result == {'statusLine': None}
+    assert outcomes == [install_in_claude.settings.EditOutcome('statusLine', 'set', False)]
+
+
+def test_set_creates_missing_objects() -> None:
+    result, _ = apply({}, install_in_claude.settings.parse_set_if_absent('a.b=1'))
+    assert result == {'a': {'b': 1}}
+
+
+def test_append_creates_a_missing_list() -> None:
+    result, outcomes = apply({}, STOP)
+    assert result == {'hooks': {'Stop': [STOP.value]}}
+    assert outcomes == [install_in_claude.settings.EditOutcome('hooks.Stop', 'append', True)]
+
+
+def test_append_keeps_other_entries_and_keys() -> None:
+    other = {'hooks': [{'type': 'command', 'command': 'other-stop'}]}
+    original = {'model': 'x', 'hooks': {'Stop': [other], 'PreToolUse': [{'matcher': 'Bash', 'hooks': []}]}}
+    result, _ = apply(original, STOP)
+    assert result == {'model': 'x', 'hooks': {'Stop': [other, STOP.value], 'PreToolUse': [{'matcher': 'Bash', 'hooks': []}]}}
+
+
+def test_append_skips_on_a_match() -> None:
+    existing = {'hooks': {'Stop': [{'hooks': [{'command': 'bash /elsewhere/stop.sh'}]}]}}
+    result, outcomes = apply(existing, STOP)
+    assert result == existing
+    assert outcomes == [install_in_claude.settings.EditOutcome('hooks.Stop', 'append', False)]
+
+
+def test_append_without_match_skips_only_an_equal_element() -> None:
+    edit = install_in_claude.settings.parse_append('xs={"a":1}')
+    assert apply({'xs': [{'a': 1}]}, edit)[0] == {'xs': [{'a': 1}]}
+    assert apply({'xs': [{'a': 1, 'b': 2}]}, edit)[0] == {'xs': [{'a': 1, 'b': 2}, {'a': 1}]}
+
+
+def test_append_is_not_skipped_when_the_match_is_absent() -> None:
+    existing = {'hooks': {'Stop': [{'hooks': [{'command': 'bash other.sh'}]}]}}
+    result, _ = apply(existing, STOP)
+    assert result['hooks']['Stop'][-1] == STOP.value  # type: ignore[index]
+
+
+@pytest.mark.parametrize(
+    ('settings', 'edit', 'found'),
+    [
+        ({'hooks': 1}, STOP, 'int'),
+        ({'hooks': {'Stop': {}}}, STOP, 'dict'),
+        ({'a': 'x'}, install_in_claude.settings.parse_set_if_absent('a.b=1'), 'str'),
+    ],
+)
+def test_wrong_types_are_refused(settings: dict[str, object], edit: object, found: str) -> None:
+    with pytest.raises(install_in_claude.settings.SettingsError, match=found):
+        apply(settings, edit)
+
+
+def test_edits_apply_in_order() -> None:
+    first = install_in_claude.settings.parse_append('xs=1')
+    second = install_in_claude.settings.parse_append('xs=2')
+    again = install_in_claude.settings.parse_append('xs=1')
+    result, outcomes = apply({}, first, second, again)
+    assert result == {'xs': [1, 2]}
+    assert [outcome.changed for outcome in outcomes] == [True, True, False]
+
+
+def test_the_input_is_not_mutated() -> None:
+    original = {'hooks': {'Stop': []}}
+    apply(original, STOP, STATUS)
+    assert original == {'hooks': {'Stop': []}}
+
+
+@pytest.mark.parametrize(
+    ('outcome', 'dry_run', 'text'),
+    [
+        (install_in_claude.settings.EditOutcome('statusLine', 'set', True), False, 'Set statusLine in f.json'),
+        (install_in_claude.settings.EditOutcome('statusLine', 'set', True), True, 'Would set statusLine in f.json'),
+        (install_in_claude.settings.EditOutcome('statusLine', 'set', False), False, 'statusLine already set in f.json'),
+        (install_in_claude.settings.EditOutcome('hooks.Stop', 'append', True), False, 'Appended to hooks.Stop in f.json'),
+        (install_in_claude.settings.EditOutcome('hooks.Stop', 'append', True), True, 'Would append to hooks.Stop in f.json'),
+        (install_in_claude.settings.EditOutcome('hooks.Stop', 'append', False), True, 'hooks.Stop already has a matching entry in f.json'),
+    ],
+)
+def test_outcome_messages(outcome: install_in_claude.settings.EditOutcome, dry_run: bool, text: str) -> None:
+    assert outcome.message(pathlib.Path('f.json'), dry_run) == text

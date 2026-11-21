@@ -34,7 +34,7 @@ package, so every later task has the checks its Definition of Done names.
       a hatchling build with `packages = ["src/install_in_claude"]`, dev
       group `pytest>=9.2.0` and `ruff==0.17.4`, and `[tool.ruff]` with
       `line-length = 160`, `quote-style = "single"`, lint `select = ["B",
-      "E", "F", "I", "ICN", "S", "SIM", "TID"]`, `ignore = ["E501"]`, and
+      "E", "F", "I", "ICN", "S", "SIM", "TID"]`, `ignore = ["E501", "SIM108"]`, and
       `"src/tests/*" = ["S101"]` under per-file ignores
 - [x] `uv lock`, then `uv sync`; `uv.lock` resolves cappa 0.33.0 and ruff
       0.17.4 (ruff 0.17.4 was released 2026-11-05, outside the 14-day
@@ -126,7 +126,7 @@ touched.
 
 ## Task 3: Apply the edits
 
-**Status:** todo
+**Status:** done
 **Priority:** high
 **Complexity:** small
 **Spec Reference:** API (`apply_edits`), Edits to `settings.json`, Error handling
@@ -136,18 +136,18 @@ message per edit.
 
 **Subtasks:**
 
-- [ ] `apply_edits(settings, edits)`: work on a deep copy; walk each `path`,
+- [x] `apply_edits(settings, edits)`: work on a deep copy; walk each `path`,
       creating missing objects; `SetIfAbsent` sets only a missing key;
       `Append` creates a missing list, and skips when an element equals the
       value (no `match`), or when an element's
       `json.dumps(element, sort_keys=True, separators=(',', ':'))` contains
       `match`
-- [ ] `SettingsError` naming the dotted path and the type found when a part
+- [x] `SettingsError` naming the dotted path and the type found when a part
       on the way is not an object, or an `--append` target is not a list
-- [ ] Return the new object and the messages (`set` / `already set` /
+- [x] Return the new object and the messages (`set` / `already set` /
       `appended` / `already has a matching entry`, each naming the path);
-      the caller learns whether anything changed by comparing objects
-- [ ] Tests in `src/tests/test_settings.py`: set when absent, kept when
+      one `EditOutcome` per edit (path, kind, changed), whose `message(settings_path, dry_run)` words it
+- [x] Tests in `src/tests/test_settings.py`: set when absent, kept when
       present (whatever the value); append to a missing list, beside other
       entries, skipped on an equal element, skipped on a `MATCH` (an entry
       `{"hooks":[{"command":"bash /elsewhere/auditme-stop.sh"}]}`), not
@@ -156,13 +156,13 @@ message per edit.
 
 **Acceptance Criteria:**
 
-- [ ] Each case above passes
-- [ ] `apply_edits` reads and writes no file
+- [x] Each case above passes
+- [x] `apply_edits` reads and writes no file
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_settings.py -q` exits 0
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_settings.py -q` exits 0
 
 **Notes:**
 

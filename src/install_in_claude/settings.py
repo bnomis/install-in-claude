@@ -1,7 +1,10 @@
 """Edits to Claude Code's settings.json: parsing, merging, reading and writing."""
 
+import collections.abc
+import copy
 import dataclasses
 import json
+import pathlib
 import re
 
 # PATH, an optional [MATCH], then = and the JSON value. A PATH part holds no
@@ -81,3 +84,86 @@ def parse_append(text: str) -> Append:
     """
     path, match, value = parse_edit('--append', text)
     return Append(path, value, match)
+
+
+# How EditOutcome.message words an edit, by (kind, dry_run) when it changed
+# something and by kind when it did not.
+ACTIONS = {
+    ('append', False): 'Appended to',
+    ('append', True): 'Would append to',
+    ('set', False): 'Set',
+    ('set', True): 'Would set',
+}
+UNCHANGED = {
+    'append': 'already has a matching entry',
+    'set': 'already set',
+}
+
+
+@dataclasses.dataclass(frozen=True)
+class EditOutcome:
+    """What one edit did: its dotted path, its kind ('set' or 'append'), and whether it changed anything."""
+
+    path: str
+    kind: str
+    changed: bool
+
+    def message(self, settings_path: pathlib.Path, dry_run: bool) -> str:
+        """The line printed for this edit."""
+        if not self.changed:
+            return f'{self.path} {UNCHANGED[self.kind]} in {settings_path}'
+        action = ACTIONS[(self.kind, dry_run)]
+        return f'{action} {self.path} in {settings_path}'
+
+
+def compact(value: object) -> str:
+    """The JSON text a [MATCH] is looked for in."""
+    return json.dumps(value, sort_keys=True, separators=(',', ':'))
+
+
+def parent_object(settings: dict[str, object], path: tuple[str, ...]) -> dict[str, object]:
+    """The object holding path's last key, creating missing objects on the way.
+
+    Raises:
+        SettingsError: a part on the way is not an object.
+    """
+    node = settings
+    for depth, key in enumerate(path[:-1]):
+        child = node.setdefault(key, {})
+        if not isinstance(child, dict):
+            raise SettingsError(f'{".".join(path[: depth + 1])} is {type(child).__name__}, not an object; cannot apply an edit to {".".join(path)}')
+        node = child
+    return node
+
+
+def apply_edits(settings: dict[str, object], edits: collections.abc.Sequence[SetIfAbsent | Append]) -> tuple[dict[str, object], list[EditOutcome]]:
+    """Return a new settings object with the edits applied, and one outcome per edit.
+
+    Pure: `settings` is not changed.
+
+    Raises:
+        SettingsError: an edit meets a value of the wrong type.
+    """
+    result = copy.deepcopy(settings)
+    outcomes = []
+    for edit in edits:
+        dotted = '.'.join(edit.path)
+        parent = parent_object(result, edit.path)
+        key = edit.path[-1]
+        if isinstance(edit, SetIfAbsent):
+            changed = key not in parent
+            if changed:
+                parent[key] = copy.deepcopy(edit.value)
+            outcomes.append(EditOutcome(dotted, 'set', changed))
+            continue
+        items = parent.setdefault(key, [])
+        if not isinstance(items, list):
+            raise SettingsError(f'{dotted} is {type(items).__name__}, not a list; cannot append to it')
+        if edit.match is None:
+            present = edit.value in items
+        else:
+            present = any(edit.match in compact(item) for item in items)
+        if not present:
+            items.append(copy.deepcopy(edit.value))
+        outcomes.append(EditOutcome(dotted, 'append', not present))
+    return result, outcomes

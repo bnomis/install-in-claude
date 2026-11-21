@@ -84,8 +84,20 @@ def parse_append(text: str) -> Append:
     """Parse `PATH=JSON` or `PATH[MATCH]=JSON`. Raises EditError."""
 
 
-def apply_edits(settings: dict[str, object], edits: collections.abc.Sequence[SetIfAbsent | Append]) -> tuple[dict[str, object], list[str]]:
-    """Return a new settings object with the edits applied, and one message per edit. Pure; raises SettingsError."""
+@dataclasses.dataclass(frozen=True)
+class EditOutcome:
+    """What one edit did: its dotted path, its kind ('set' or 'append'), and whether it changed anything."""
+
+    path: str
+    kind: str
+    changed: bool
+
+    def message(self, settings_path: pathlib.Path, dry_run: bool) -> str:
+        """`Set statusLine in <file>`, `Would append to hooks.Stop in <file>`, `statusLine already set in <file>`, ..."""
+
+
+def apply_edits(settings: dict[str, object], edits: collections.abc.Sequence[SetIfAbsent | Append]) -> tuple[dict[str, object], list[EditOutcome]]:
+    """Return a new settings object with the edits applied, and one outcome per edit. Pure; raises SettingsError."""
 
 
 def read_settings(path: pathlib.Path) -> dict[str, object]:
@@ -162,7 +174,7 @@ install:
 5. Report `dangling_links(target)`: each path, then one `rm ...` line to remove
    them all. Nothing is deleted.
 6. Write the settings if any edit changed them, then print each edit's
-   message (`Set statusLine in <file>`, `statusLine already set in <file>`,
+   `EditOutcome.message` (`Set statusLine in <file>`, `statusLine already set in <file>`,
    `Appended to hooks.Stop in <file>`, `hooks.Stop already has a matching
    entry in <file>`).
 
