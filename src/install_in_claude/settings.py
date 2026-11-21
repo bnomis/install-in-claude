@@ -4,8 +4,11 @@ import collections.abc
 import copy
 import dataclasses
 import json
+import os
 import pathlib
 import re
+import shutil
+import tempfile
 
 # PATH, an optional [MATCH], then = and the JSON value. A PATH part holds no
 # '.', '[', ']' or '='; MATCH holds no ']'.
@@ -167,3 +170,44 @@ def apply_edits(settings: dict[str, object], edits: collections.abc.Sequence[Set
             items.append(copy.deepcopy(edit.value))
         outcomes.append(EditOutcome(dotted, 'append', not present))
     return result, outcomes
+
+
+def read_settings(path: pathlib.Path) -> dict[str, object]:
+    """The parsed settings file, {} when it is absent.
+
+    Raises:
+        SettingsError: the file is not valid JSON, or not a JSON object.
+    """
+    if not path.exists():
+        return {}
+    text = path.read_text()
+    try:
+        settings = json.loads(text)
+    except ValueError as e:
+        raise SettingsError(f'{path} is not valid JSON; not changed (check it with: python3 -m json.tool {path})') from e
+    if not isinstance(settings, dict):
+        raise SettingsError(f'{path} is not a JSON object; not changed')
+    return settings
+
+
+def write_settings(path: pathlib.Path, settings: dict[str, object]) -> None:
+    """Write the settings atomically, keeping the file's mode.
+
+    The first time an existing file is changed, its original is kept as
+    settings.json.orig; a later write leaves that copy alone.
+    """
+    if path.exists():
+        orig = path.with_name(path.name + '.orig')
+        if not orig.exists():
+            shutil.copy2(path, orig)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f'{path.name}.')
+    try:
+        with os.fdopen(fd, 'w') as f:
+            f.write(json.dumps(settings, indent=2) + '\n')
+        if path.exists():
+            shutil.copymode(path, tmp)
+        os.replace(tmp, path)
+    except BaseException:
+        pathlib.Path(tmp).unlink(missing_ok=True)
+        raise

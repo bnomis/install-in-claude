@@ -172,7 +172,7 @@ message per edit.
 
 ## Task 4: Read and write `settings.json`
 
-**Status:** todo
+**Status:** done
 **Priority:** high
 **Complexity:** small
 **Spec Reference:** API (`read_settings`, `write_settings`), Error handling
@@ -182,27 +182,27 @@ mode and the first original.
 
 **Subtasks:**
 
-- [ ] `read_settings(path)`: `{}` when absent; `SettingsError` naming the file
+- [x] `read_settings(path)`: `{}` when absent; `SettingsError` naming the file
       and `python3 -m json.tool <file>` when it is not valid JSON, and naming
       the file when it is not an object
-- [ ] `write_settings(path, settings)`: copy an existing file to
+- [x] `write_settings(path, settings)`: copy an existing file to
       `settings.json.orig` only if no `.orig` exists; create the parent; write
       `json.dumps(settings, indent=2) + '\n'` to a temporary file in the same
       directory, copy the old mode onto it, `os.replace`; remove the temporary
       file on any failure and re-raise
-- [ ] Tests: absent file read as `{}`; invalid JSON and a JSON array refused,
+- [x] Tests: absent file read as `{}`; invalid JSON and a JSON array refused,
       file unchanged, no `.orig`; written file round-trips; mode `0o600` kept;
       `.orig` written once across two writes; no temporary file left after a
       write
 
 **Acceptance Criteria:**
 
-- [ ] Each case above passes
+- [x] Each case above passes
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_settings.py -q` exits 0
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_settings.py -q` exits 0
 
 **Notes:**
 

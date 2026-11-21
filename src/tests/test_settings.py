@@ -157,3 +157,47 @@ def test_the_input_is_not_mutated() -> None:
 )
 def test_outcome_messages(outcome: install_in_claude.settings.EditOutcome, dry_run: bool, text: str) -> None:
     assert outcome.message(pathlib.Path('f.json'), dry_run) == text
+
+
+def test_an_absent_file_reads_as_empty(tmp_path: pathlib.Path) -> None:
+    assert install_in_claude.settings.read_settings(tmp_path / 'settings.json') == {}
+
+
+@pytest.mark.parametrize(('content', 'reason'), [('{not json', 'not valid JSON'), ('[1, 2]', 'not a JSON object')])
+def test_invalid_settings_are_refused(tmp_path: pathlib.Path, content: str, reason: str) -> None:
+    path = tmp_path / 'settings.json'
+    path.write_text(content)
+    with pytest.raises(install_in_claude.settings.SettingsError, match=reason):
+        install_in_claude.settings.read_settings(path)
+    assert path.read_text() == content
+    assert not path.with_name('settings.json.orig').exists()
+
+
+def test_a_written_file_round_trips(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'new' / 'settings.json'
+    install_in_claude.settings.write_settings(path, {'a': [1, {'b': 'c'}]})
+    assert install_in_claude.settings.read_settings(path) == {'a': [1, {'b': 'c'}]}
+    assert path.read_text().endswith('}\n')
+
+
+def test_the_mode_is_kept(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    path.write_text('{}')
+    path.chmod(0o600)
+    install_in_claude.settings.write_settings(path, {'a': 1})
+    assert path.stat().st_mode & 0o777 == 0o600
+
+
+def test_the_original_is_kept_once(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    path.write_text('{"model": "x"}')
+    install_in_claude.settings.write_settings(path, {'a': 1})
+    install_in_claude.settings.write_settings(path, {'a': 2})
+    assert path.with_name('settings.json.orig').read_text() == '{"model": "x"}'
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['settings.json', 'settings.json.orig']
+
+
+def test_a_new_file_gets_no_original(tmp_path: pathlib.Path) -> None:
+    path = tmp_path / 'settings.json'
+    install_in_claude.settings.write_settings(path, {})
+    assert sorted(p.name for p in tmp_path.iterdir()) == ['settings.json']
