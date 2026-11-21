@@ -187,6 +187,7 @@ def read_settings(path: pathlib.Path) -> dict[str, object]:
     except UnicodeDecodeError as e:
         raise SettingsError(f'{path} is not UTF-8 text; not changed') from e
     except OSError as e:
+        # auditme: accept[except-interpolation] main() prints str(e), so the OS reason reaches the user only here
         raise SettingsError(f'{path} cannot be read ({e.strerror}); not changed') from e
     try:
         settings = json.loads(text)

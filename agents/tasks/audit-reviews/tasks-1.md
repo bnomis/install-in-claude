@@ -225,7 +225,7 @@ sites again.
 
 ## Task 7: Verify the whole tree and close the review's findings
 
-**Status:** todo
+**Status:** done
 **Priority:** medium
 **Complexity:** small
 **Source Reference:** review-1, every finding
@@ -235,20 +235,20 @@ resolved in the audit summary.
 
 **Subtasks:**
 
-- [ ] Run `python3 ~/.claude/skills/auditme/checks/audit.py . > /tmp/audit-install-in-claude.jsonl` and confirm it holds no `"accepted": false` line
-- [ ] Probe both reproduced cases: `--settings` naming a directory and `--target` naming a file each print an `ERROR:` line and exit 2, with no traceback
-- [ ] In `agents/audit-reviews/summary.md`, move each finding of review-1 from Unresolved to Recently resolved (resolved in "tasks-1"), and update the hit count line from the run above
+- [x] Run `python3 ~/.claude/skills/auditme/checks/audit.py . > /tmp/audit-install-in-claude.jsonl` and confirm it holds no `"accepted": false` line
+- [x] Probe both reproduced cases: `--settings` naming a directory and `--target` naming a file each print an `ERROR:` line and exit 2, with no traceback
+- [x] In `agents/audit-reviews/summary.md`, move each finding of review-1 from Unresolved to Recently resolved (resolved in "tasks-1"), and update the hit count line from the run above
 
 **Acceptance Criteria:**
 
-- [ ] The sweep reports zero unaccepted hits
-- [ ] `agents/audit-reviews/summary.md` lists no unresolved review-1 finding
+- [x] The sweep reports zero unaccepted hits
+- [x] `agents/audit-reviews/summary.md` lists no unresolved review-1 finding
 
 **Definition of Done:**
 
-- [ ] `pre-commit run --all-files` exits 0
-- [ ] `source bin/activate.sh && pytest src/tests/test_cli.py src/tests/test_links.py src/tests/test_settings.py -q` passes (every module that imports a changed module)
-- [ ] `python3 ~/.claude/skills/auditme/checks/audit.py .` prints no unaccepted hit
+- [x] `pre-commit run --all-files` exits 0
+- [x] `source bin/activate.sh && pytest src/tests/test_cli.py src/tests/test_links.py src/tests/test_settings.py -q` passes (every module that imports a changed module)
+- [x] `python3 ~/.claude/skills/auditme/checks/audit.py .` prints no unaccepted hit
 
 **Notes:**
 
