@@ -27,7 +27,7 @@ cannot hold a hyphen:
 
 | File | Holds |
 |---|---|
-| `src/install_in_claude/__init__.py` | Re-exports the public API below |
+| `src/install_in_claude/__init__.py` | Holds only the package docstring; the API below is imported from its own module |
 | `src/install_in_claude/cli.py` | The `cappa` command and `main()` |
 | `src/install_in_claude/links.py` | Linking and the dangling-link report |
 | `src/install_in_claude/settings.py` | Edit parsing, merging, reading and writing `settings.json` |

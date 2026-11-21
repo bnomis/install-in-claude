@@ -80,7 +80,7 @@ with the code on the two points the audit found.
 
 ## Task 3: Drop the package's re-exports
 
-**Status:** todo
+**Status:** done
 **Priority:** low
 **Complexity:** small
 **Source Reference:** review-1 decision D2 (A17)
@@ -91,20 +91,20 @@ spec that the package is the command.
 
 **Subtasks:**
 
-- [ ] Confirm review-1's Answers section records D2 as A; if it does not, stop the task as `blocked`, naming the missing answer
-- [ ] Check that nothing imports a name from the package root: `grep -rnE 'from install_in_claude import|import install_in_claude$' src bin pyproject.toml` finds no importer other than the entry point `install_in_claude.cli:main`; if it finds one, stop the task as `blocked`, naming it
-- [ ] Replace the body of `src/install_in_claude/__init__.py` with a one-line module docstring saying the package is the `install-in-claude` command and its modules are `cli`, `links` and `settings`
-- [ ] In `agents/specs/install-in-claude/spec.md`, change the Module location row for `src/install_in_claude/__init__.py` from "Re-exports the public API below" to say it holds only the package docstring, and that the API below is imported from its own module
+- [x] Confirm review-1's Answers section records D2 as A; if it does not, stop the task as `blocked`, naming the missing answer
+- [x] Check that nothing imports a name from the package root: `grep -rnE 'from install_in_claude import|import install_in_claude$' src bin pyproject.toml` finds no importer other than the entry point `install_in_claude.cli:main`; if it finds one, stop the task as `blocked`, naming it
+- [x] Replace the body of `src/install_in_claude/__init__.py` with a one-line module docstring saying the package is the `install-in-claude` command and its modules are `cli`, `links` and `settings`
+- [x] In `agents/specs/install-in-claude/spec.md`, change the Module location row for `src/install_in_claude/__init__.py` from "Re-exports the public API below" to say it holds only the package docstring, and that the API below is imported from its own module
 
 **Acceptance Criteria:**
 
-- [ ] `src/install_in_claude/__init__.py` holds no import and no `__all__`
-- [ ] The console script still runs: `source bin/activate.sh && python -c "import install_in_claude.cli as c; print(c.main(['--help']))"` prints the help text
+- [x] `src/install_in_claude/__init__.py` holds no import and no `__all__`
+- [x] The console script still runs: `source bin/activate.sh && python -c "import install_in_claude.cli as c; print(c.main(['--help']))"` prints the help text
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_cli.py src/tests/test_links.py src/tests/test_settings.py -q` passes (every test module imports the package)
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_cli.py src/tests/test_links.py src/tests/test_settings.py -q` passes (every test module imports the package)
 
 **Notes:**
 
