@@ -26,5 +26,5 @@ pre-commit install --hook-type pre-commit --hook-type pre-push --hook-type commi
 This repository serves many projects. Its code, tests, fixtures, specs, task
 lists, records and commit messages name no project it has been run on: a
 project it serves is "one project", described by what it does. The
-`no-project-names` hook, published by the agents repository, enforces it at
+`no-project-names` hook, published by the auditor repository, enforces it at
 commit and commit-msg time.

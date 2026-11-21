@@ -7,10 +7,10 @@ repos:
       - id: ruff-format
 
   # This repository serves many projects, so no file or commit message names
-  # one. The names hook is published by the agents repository and reads a
+  # one. The names hook is published by the auditor repository and reads a
   # list kept outside every repository.
-  - repo: git@github.com:bnomis/agents.git
-    rev: 0394f33ad0a93344a9d387a399225c0dca94a955
+  - repo: git@github.com:bnomis/auditor.git
+    rev: 6747c4e78f83f14efd7af58c3d01c6b5b1be27b1
     hooks:
       - id: no-project-names
         args: [--allow=install-in-claude]
