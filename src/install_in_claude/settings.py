@@ -63,6 +63,7 @@ def parse_edit(option: str, text: str) -> tuple[tuple[str, ...], str | None, obj
     try:
         value = json.loads(value_text)
     except ValueError as e:
+        # auditme: accept[except-interpolation] main() prints str(e), so the parser's position reaches the user only here
         raise EditError(f'{option} {text!r}: the value is not valid JSON ({e})') from e
     return tuple(path_text.split('.')), match, value
 

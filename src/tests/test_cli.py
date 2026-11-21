@@ -96,6 +96,7 @@ def test_invalid_settings_exit_1_with_nothing_linked(project: pathlib.Path, tmp_
     (target / 'settings.json').write_text('{not json')
     assert run(project, target, '--set-if-absent', STATUS_LINE) == 1
     assert (target / 'settings.json').read_text() == '{not json'
+    # auditme: accept[literal-duplication] expected value written out in an assertion
     assert sorted(p.name for p in target.iterdir()) == ['settings.json']
     assert 'not valid JSON' in capsys.readouterr().err
 

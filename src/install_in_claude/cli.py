@@ -99,8 +99,10 @@ def main(argv: collections.abc.Sequence[str] | None = None) -> int:
     try:
         return install(command)
     except install_in_claude.settings.EditError as e:
+        # auditme: accept[except-interpolation] the domain error's message is the report the user sees
         print(f'ERROR: {e}', file=sys.stderr)
         return 2
     except install_in_claude.settings.SettingsError as e:
+        # auditme: accept[except-interpolation] the domain error's message is the report the user sees
         print(f'ERROR: {e}', file=sys.stderr)
         return 1

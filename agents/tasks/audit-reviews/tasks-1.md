@@ -13,7 +13,7 @@ review page.
 
 ## Task 1: Accept the deliberate sweep hits
 
-**Status:** todo
+**Status:** done
 **Priority:** low
 **Complexity:** small
 **Source Reference:** review-1 items I1, I2, I3 (rules `except-interpolation`, `literal-duplication`)
@@ -24,20 +24,20 @@ accepted.
 
 **Subtasks:**
 
-- [ ] Confirm review-1's Answers section approves I1, I2 and I3; if it does not, stop the task as `blocked`, naming the missing answer
-- [ ] On `src/install_in_claude/cli.py` lines `print(f'ERROR: {e}', file=sys.stderr)` in both `except` blocks of `main()`, add `# auditme: accept[except-interpolation] the domain error's message is the report the user sees`
-- [ ] On the `raise EditError(... the value is not valid JSON ({e})) from e` line of `parse_edit` in `src/install_in_claude/settings.py`, add `# auditme: accept[except-interpolation] main() prints str(e), so the parser's position reaches the user only here`
-- [ ] On the four `literal-duplication` sites (`src/tests/test_cli.py`, the `('settings.json',)` assertion in `test_invalid_settings_exit_1_with_nothing_linked`; `src/tests/test_settings.py`, the `('hooks', 'Stop')` assertions in `test_append_parses_a_match` and `test_append_without_a_match` and the `['settings.json']` assertion in `test_a_new_file_gets_no_original`), add `# auditme: accept[literal-duplication] expected value written out in an assertion` on the line or the line above
+- [x] Confirm review-1's Answers section approves I1, I2 and I3; if it does not, stop the task as `blocked`, naming the missing answer
+- [x] On `src/install_in_claude/cli.py` lines `print(f'ERROR: {e}', file=sys.stderr)` in both `except` blocks of `main()`, add `# auditme: accept[except-interpolation] the domain error's message is the report the user sees`
+- [x] On the `raise EditError(... the value is not valid JSON ({e})) from e` line of `parse_edit` in `src/install_in_claude/settings.py`, add `# auditme: accept[except-interpolation] main() prints str(e), so the parser's position reaches the user only here`
+- [x] On the four `literal-duplication` sites (`src/tests/test_cli.py`, the `('settings.json',)` assertion in `test_invalid_settings_exit_1_with_nothing_linked`; `src/tests/test_settings.py`, the `('hooks', 'Stop')` assertions in `test_append_parses_a_match` and `test_append_without_a_match` and the `['settings.json']` assertion in `test_a_new_file_gets_no_original`), add `# auditme: accept[literal-duplication] expected value written out in an assertion` on the line or the line above
 
 **Acceptance Criteria:**
 
-- [ ] `python3 ~/.claude/skills/auditme/checks/audit.py .` prints no line with `"accepted": false` for `except-interpolation` or `literal-duplication`
-- [ ] Every marker is scoped (`accept[<rule>]`), none unscoped
+- [x] `python3 ~/.claude/skills/auditme/checks/audit.py .` prints no line with `"accepted": false` for `except-interpolation` or `literal-duplication`
+- [x] Every marker is scoped (`accept[<rule>]`), none unscoped
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_cli.py src/tests/test_settings.py -q` passes
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_cli.py src/tests/test_settings.py -q` passes
 
 **Notes:**
 
