@@ -186,7 +186,7 @@ spec that the package is the command.
 
 ## Task 6: Dismiss the A1 sites the spec keeps propagating
 
-**Status:** todo
+**Status:** done
 **Priority:** low
 **Complexity:** small
 **Source Reference:** review-1 decision D1 option A (A1 sites in `links.py` and `write_settings`)
@@ -197,24 +197,24 @@ sites again.
 
 **Subtasks:**
 
-- [ ] Confirm review-1's Answers section records D1 as A; if it does not, stop the task as `blocked`, naming the missing answer
-- [ ] For each id below, run `python3 ~/.claude/skills/auditme/checks/phaseb.py dismiss . --question A1 '<id>' --reason 'review-1 D1: spec - an OSError while linking or writing propagates'`:
+- [x] Confirm review-1's Answers section records D1 as A; if it does not, stop the task as `blocked`, naming the missing answer
+- [x] For each id below, run `python3 ~/.claude/skills/auditme/checks/phaseb.py dismiss . --question A1 '<id>' --reason 'review-1 D1: spec - an OSError while linking or writing propagates'`:
   - `src/install_in_claude/links.py::link_entries::call:dest.mkdir#1`
   - `src/install_in_claude/links.py::link_entries::call:target.mkdir#1`
   - `src/install_in_claude/links.py::link_one::call:dst.symlink_to#1`
   - `src/install_in_claude/links.py::link_one::call:dst.unlink#1`
   - `src/install_in_claude/settings.py::write_settings::call:path.parent.mkdir#1`
   - `src/install_in_claude/settings.py::write_settings::call:pathlib.Path(tmp).unlink#1`
-- [ ] If `dismiss` refuses an id, stop the task as `blocked`, naming it and the refusal
+- [x] If `dismiss` refuses an id, stop the task as `blocked`, naming it and the refusal
 
 **Acceptance Criteria:**
 
-- [ ] `python3 ~/.claude/skills/auditme/checks/phaseb.py report . --question A1` lists none of the six ids as open
-- [ ] `agents/audit-reviews/ledger/A1.jsonl` is the only file changed
+- [x] `python3 ~/.claude/skills/auditme/checks/phaseb.py report . --question A1` lists none of the six ids as open
+- [x] `agents/audit-reviews/ledger/A1.jsonl` is the only file changed
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
 
 **Notes:**
 
