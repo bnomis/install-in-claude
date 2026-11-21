@@ -144,6 +144,8 @@ every `--append`, each in the order given.
 |---|---|---|
 | Bad arguments, or an edit that does not parse (no `=`, an empty or invalid `PATH`, `[]` with no `MATCH`, invalid JSON): `EditError` | 2 | Message naming the argument; nothing changed. |
 | `--source` is not a directory | 2 | `ERROR: <source> is not a directory`; nothing changed. |
+| `--target` exists and is not a directory | 2 | `ERROR: <target> is not a directory`; nothing changed. |
+| `--settings` exists and is not a file | 2 | `ERROR: <settings> is not a file`; nothing changed. |
 | `settings.json` is not valid JSON: `SettingsError` | 1 | Message naming the file and `python3 -m json.tool <file>`; nothing changed. |
 | `settings.json` is not a JSON object: `SettingsError` | 1 | Message naming the file (`<path> is not a JSON object; not changed`); nothing changed. |
 | An edit meets the wrong type (a `PATH` part is not an object, an `--append` target is not a list): `SettingsError` | 1 | Message naming the path and the type found; nothing changed. |

@@ -115,7 +115,7 @@ spec that the package is the command.
 
 ## Task 4: Refuse a --target or --settings of the wrong kind up front
 
-**Status:** todo
+**Status:** done
 **Priority:** medium
 **Complexity:** small
 **Source Reference:** review-1 decision D1 option A (Sec2 at `cli.py:70`, `cli.py:71`)
@@ -124,21 +124,21 @@ spec that the package is the command.
 
 **Subtasks:**
 
-- [ ] Confirm review-1's Answers section records D1 as A; if it does not, stop the task as `blocked`, naming the missing answer
-- [ ] In `install()` in `src/install_in_claude/cli.py`, after `target` and `settings_path` are resolved and before `read_settings` runs: if `target` exists and is not a directory, print `ERROR: <target> is not a directory` to stderr and return 2; if `settings_path` exists and is not a regular file, print `ERROR: <settings> is not a file` to stderr and return 2
-- [ ] Add tests to `src/tests/test_cli.py`: a `--target` that is an existing file exits 2 with that message and creates nothing; a `--settings` that is a directory exits 2 with that message and links nothing
-- [ ] Update `README.md`'s Exit codes row for `2` to name both cases
-- [ ] Add both cases to the Error handling table in `agents/specs/install-in-claude/spec.md`, beside the `--source` row (exit 2, message, nothing changed)
+- [x] Confirm review-1's Answers section records D1 as A; if it does not, stop the task as `blocked`, naming the missing answer
+- [x] In `install()` in `src/install_in_claude/cli.py`, after `target` and `settings_path` are resolved and before `read_settings` runs: if `target` exists and is not a directory, print `ERROR: <target> is not a directory` to stderr and return 2; if `settings_path` exists and is not a regular file, print `ERROR: <settings> is not a file` to stderr and return 2
+- [x] Add tests to `src/tests/test_cli.py`: a `--target` that is an existing file exits 2 with that message and creates nothing; a `--settings` that is a directory exits 2 with that message and links nothing
+- [x] Update `README.md`'s Exit codes row for `2` to name both cases
+- [x] Add both cases to the Error handling table in `agents/specs/install-in-claude/spec.md`, beside the `--source` row (exit 2, message, nothing changed)
 
 **Acceptance Criteria:**
 
-- [ ] Both new tests pass, and each asserts the exit code, the message on stderr and that the target holds no new link
-- [ ] A `--target` that does not exist yet is still created, and a missing `--settings` is still treated as empty (existing tests keep passing)
+- [x] Both new tests pass, and each asserts the exit code, the message on stderr and that the target holds no new link
+- [x] A `--target` that does not exist yet is still created, and a missing `--settings` is still treated as empty (existing tests keep passing)
 
 **Definition of Done:**
 
-- [ ] The task's commit passes its pre-commit hooks (never `--no-verify`)
-- [ ] `source bin/activate.sh && pytest src/tests/test_cli.py -q` passes
+- [x] The task's commit passes its pre-commit hooks (never `--no-verify`)
+- [x] `source bin/activate.sh && pytest src/tests/test_cli.py -q` passes
 
 **Notes:**
 

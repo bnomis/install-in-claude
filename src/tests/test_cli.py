@@ -90,6 +90,27 @@ def test_a_missing_source_exits_2(tmp_path: pathlib.Path, capsys: pytest.Capture
     assert 'is not a directory' in capsys.readouterr().err
 
 
+def test_a_target_that_is_a_file_exits_2_with_nothing_linked(project: pathlib.Path, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+    target = tmp_path / 'home' / 'claude-file'
+    target.parent.mkdir(parents=True)
+    target.write_text('not a directory')
+    assert run(project, target) == 2
+    assert target.read_text() == 'not a directory'
+    assert sorted(p.name for p in target.parent.iterdir()) == ['claude-file']
+    assert f'ERROR: {target.resolve()} is not a directory' in capsys.readouterr().err
+
+
+def test_a_settings_path_that_is_a_directory_exits_2_with_nothing_linked(
+    project: pathlib.Path, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    target = tmp_path / 'home' / '.claude'
+    settings = tmp_path / 'settings-dir'
+    settings.mkdir()
+    assert run(project, target, '--settings', str(settings)) == 2
+    assert not target.exists()
+    assert f'ERROR: {settings.resolve()} is not a file' in capsys.readouterr().err
+
+
 def test_invalid_settings_exit_1_with_nothing_linked(project: pathlib.Path, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
     target = tmp_path / 'home' / '.claude'
     target.mkdir(parents=True)

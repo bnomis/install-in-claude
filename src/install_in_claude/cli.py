@@ -70,6 +70,13 @@ def install(command: InstallInClaude) -> int:
     target = (command.target or pathlib.Path('~/.claude')).expanduser().resolve()
     settings_path = (command.settings or target / 'settings.json').expanduser().resolve()
 
+    if target.exists() and not target.is_dir():
+        print(f'ERROR: {target} is not a directory', file=sys.stderr)
+        return 2
+    if settings_path.exists() and not settings_path.is_file():
+        print(f'ERROR: {settings_path} is not a file', file=sys.stderr)
+        return 2
+
     current = install_in_claude.settings.read_settings(settings_path)
     updated, outcomes = install_in_claude.settings.apply_edits(current, edits)
 
