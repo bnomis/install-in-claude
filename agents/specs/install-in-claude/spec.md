@@ -173,8 +173,8 @@ install:
    `<name>.orig.2` and on. Each link is relative
    (`src.parent.relative_to(dst.parent, walk_up=True)`), printed as
    `Linking <src> to <dst> via <relative>`.
-5. Report `dangling_links(target)`: each path, then one `rm ...` line to remove
-   them all. Nothing is deleted.
+5. Report `dangling_links(target)`: each path, then one `rm -- ...` line to
+   remove them all, each path quoted with `shlex.quote`. Nothing is deleted.
 6. Write the settings if any edit changed them, then print each edit's
    `EditOutcome.message` (`Set statusLine in <file>`, `statusLine already set in <file>`,
    `Appended to hooks.Stop in <file>`, `hooks.Stop already has a matching

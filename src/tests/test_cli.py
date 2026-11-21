@@ -1,5 +1,6 @@
 import json
 import pathlib
+import shlex
 
 import pytest
 
@@ -112,7 +113,7 @@ def test_a_dangling_link_is_reported_with_its_rm_line(project: pathlib.Path, tmp
     assert run(project, target) == 0
     out = capsys.readouterr().out
     assert 'Dangling symlinks found:' in out
-    assert f'rm {target.resolve() / "skills" / "old"}' in out
+    assert f'rm -- {target.resolve() / "skills" / "old"}' in out
     assert (target / 'skills' / 'old').is_symlink()
 
 
@@ -133,3 +134,13 @@ def test_set_if_absent_applies_before_append(project: pathlib.Path, tmp_path: pa
     target = tmp_path / 'home' / '.claude'
     assert run(project, target, '--append', 'xs=1', '--set-if-absent', 'xs=[0]') == 0
     assert json.loads((target / 'settings.json').read_text()) == {'xs': [0, 1]}
+
+
+def test_the_rm_line_quotes_each_path(project: pathlib.Path, tmp_path: pathlib.Path, capsys: pytest.CaptureFixture[str]) -> None:
+    target = tmp_path / 'home' / '.claude'
+    (target / 'skills').mkdir(parents=True)
+    odd = target / 'skills' / "it's; touch x"
+    odd.symlink_to(tmp_path / 'gone')
+    assert run(project, target) == 0
+    rm_line = next(line for line in capsys.readouterr().out.splitlines() if line.startswith('rm '))
+    assert shlex.split(rm_line) == ['rm', '--', str(target.resolve() / 'skills' / "it's; touch x")]

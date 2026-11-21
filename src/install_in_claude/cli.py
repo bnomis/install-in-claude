@@ -3,6 +3,7 @@
 import collections.abc
 import dataclasses
 import pathlib
+import shlex
 import sys
 import typing
 
@@ -81,7 +82,9 @@ def install(command: InstallInClaude) -> int:
         for path in dangling:
             print(f'  {path}')
         print('Remove with:')
-        print(f'rm {" ".join(str(path) for path in dangling)}')
+        # Quoted, so a name holding a space or a shell character is removed
+        # as itself when the line is pasted into a shell.
+        print(f'rm -- {" ".join(shlex.quote(str(path)) for path in dangling)}')
 
     if updated != current and not command.dry_run:
         install_in_claude.settings.write_settings(settings_path, updated)

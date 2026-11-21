@@ -50,7 +50,7 @@ exec uvx --from "git+ssh://git@github.com/bnomis/install-in-claude.git@<commit>"
 3. In the way of a link: an old link is replaced; a real file is renamed to
    `<name>.orig` (then `<name>.orig.2`, ...), never deleted.
 4. Reports dangling links in the target (two levels deep), with one `rm`
-   command to remove them. It never deletes them itself: a dangling link may
+   command, each path quoted, to remove them. It never deletes them itself: a dangling link may
    belong to another project.
 5. Applies the settings edits, writes `settings.json` only if something
    changed, atomically and keeping its mode, and keeps the first original as
