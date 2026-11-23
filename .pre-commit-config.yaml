@@ -9,8 +9,8 @@ repos:
   # This repository serves many projects, so no file or commit message names
   # one. The names hook is published by the auditor repository and reads a
   # list kept outside every repository.
-  - repo: git@github.com:bnomis/auditor.git
-    rev: 717d4af03e5d50448406cf828e6616442705eb64
+  - repo: https://github.com/bnomis/auditor
+    rev: 3e232368c42ae4147aa8607ac73570adfc3f786f
     hooks:
       - id: no-project-names
         args: [--allow=install-in-claude]
