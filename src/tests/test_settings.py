@@ -128,7 +128,7 @@ def test_append_is_not_skipped_when_the_match_is_absent() -> None:
 )
 def test_wrong_types_are_refused(settings: dict[str, object], edit: object, found: str) -> None:
     with pytest.raises(install_in_claude.settings.SettingsError, match=found):
-        apply(settings, edit)
+        apply(settings, edit)  # auditme: accept[discarded-tuple-return] the call raises before returning
 
 
 def test_edits_apply_in_order() -> None:
@@ -142,8 +142,9 @@ def test_edits_apply_in_order() -> None:
 
 def test_the_input_is_not_mutated() -> None:
     original = {'hooks': {'Stop': []}}
-    apply(original, STOP, STATUS)
+    result, _ = apply(original, STOP, STATUS)
     assert original == {'hooks': {'Stop': []}}
+    assert result != original
 
 
 @pytest.mark.parametrize(
